@@ -81,8 +81,11 @@
 ---
 
 
-## 🏫 Universitatea Tehnică „Gheorghe Asachi” din Iași  
-**Facultatea de Automatică și Calculatoare**
+## 🏫 Gheorghe Asachi Technical University of Iași  
+**Faculty of Automatic Control and Computer Engineering**
 
 ---
+## 📐 System Architecture
+👉arhitecture.pdf
+
 
