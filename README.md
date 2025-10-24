@@ -86,6 +86,8 @@
 
 ---
 ## 📐 System Architecture
-👉[**Arhitectura.pdf**](Arhitectura.pdf)
+<p align="center">
+  <img src="images/arhitecture.jpg">
+</p>
 
 
