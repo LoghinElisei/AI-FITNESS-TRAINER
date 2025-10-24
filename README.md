@@ -1,110 +1,85 @@
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/BzgEFjMi)
-# 📘 Proiect PI — Analiza articolelor despre Body Tracking și Posture Detection
+# 📘 CVAI - Body Tracking Detection
 
-**Autori:**  
+**Authors:**  
 - Loghin Elisei  
 - Spiridon Ovidiu-Ștefan  
 
 ---
 
-## 🧠 Descriere generală
+## 🧠 General Description
 
-Acest proiect reprezintă o analiză comparativă a mai multor articole științifice care abordează detecția posturii și urmărirea mișcărilor corpului uman prin intermediul viziunii computerizate.  
-Scopul lucrării este de a evidenția tehnologiile actuale utilizate în sistemele de **Body Tracking** și **Exercise Tracking**, precum și de a analiza performanțele, limitările și direcțiile de îmbunătățire propuse în literatura de specialitate.
 
----
-
-## 📚 Articole analizate
-
-### **Articol 1**
-- **Titlu:** Real-Time Digital Assistance for Exercise: Exercise Tracking System with MediaPipe Angle Directive Rule  
-- **Autori:** Anuj Patil, Darshan Rao, Kaustubh Utturwar, Tejas Shelke, Ekta Sardar  
-- **An:** 2022  
-- **Tehnologii:** MediaPipe, cameră de telefon  
-- **Domeniu:** Body Posture Detection și Motion Tracking  
-- **Rezumat:** Sistem software care urmărește exercițiile efectuate și oferă feedback asupra posturii utilizatorului în timp real.  
-- **Rezultate:** Acuratețe medie de **92%** pentru exercițiul „push-up”.  
-- **Limitări:** Calitatea camerei telefonului și condițiile de mediu.  
-- **Comentarii:** Performanța poate fi îmbunătățită prin utilizarea unei aplicații Android cu o cameră de calitate mai bună.
 
 ---
 
-### **Articol 2**
-- **Titlu:** Real-Time Digital Assistance for Exercise: Exercise Tracking System with MediaPipe Angle Directive Rule  
-- **Autori:** Kok Swee Sim, Shun Wei Wong, Alex Low, Andi  
-- **An:** 2024  
-- **Tehnologii:** MediaPipe, YOLOv7, Angle Directive Rules  
-- **Domeniu:** Body Tracking  
-- **Rezumat:** Sistem pentru recunoașterea exercițiilor simple (push-ups, pull-ups, sit-ups) cu acuratețe ridicată, folosind estimarea poziției corpului.  
-- **Rezultate:** Modelul expand-shrink MLP a obținut o acuratețe cu **16% mai mare** decât baseline-ul.  
-- **Limitări:** Probleme de confidențialitate, cost, interoperabilitate și experiență a utilizatorului.  
-- **Comentarii:** Scopul cercetării este dezvoltarea unui model MLP îmbunătățit pentru recunoașterea exercițiilor.
+## 📚 Analyzed Papers
+
+### **Paper 1**
+- **Title:** Real-Time Digital Assistance for Exercise: Exercise Tracking System with MediaPipe Angle Directive Rule  
+- **Authors:** Anuj Patil, Darshan Rao, Kaustubh Utturwar, Tejas Shelke, Ekta Sardar  
+- **Year:** 2022  
+- **Technologies:** MediaPipe, phone camera  
+- **Domain:** Body Posture Detection and Motion Tracking  
+- **Summary:** A software-based motion tracker that monitors performed exercises and provides real-time feedback on the user’s posture during workouts.  
+- **Results:** Average accuracy of **92%** for push-up exercises (based on 50 repetitions).  
+- **Limitations:** Phone camera quality and environmental factors.  
+- **Comments:** Accuracy could be improved by developing an Android app utilizing higher-quality cameras.
 
 ---
 
-### **Articol 3**
-- **Titlu:** Body Posture Detection Using Computer Vision  
-- **Autori:** Anand Upadhyay, Ketan Chaudhari, Pradip Bhere, Jerin Thomas  
-- **An:** 2020  
-- **Tehnologii:** OpenCV, Pyroelectric Infrared Sensors  
-- **Domeniu:** Body Posture Detection  
-- **Rezumat:** Analiza și recunoașterea posturii corpului uman din imagini și videoclipuri, fără utilizarea senzorilor externi.  
-- **Rezultate:** Metoda bazată pe OpenCV este mai accesibilă și practică decât cea cu senzori fizici.  
-- **Limitări:** Precizie mai scăzută decât sistemele cu accelerometre/giroscoape; sensibilitate la obstacole între cameră și subiect.  
-- **Comentarii:** Domeniul recunoașterii posturii umane a evoluat semnificativ datorită progreselor din viziunea computerizată.
+### **Paper 2**
+- **Title:** Real-Time Digital Assistance for Exercise: Exercise Tracking System with MediaPipe Angle Directive Rule  
+- **Authors:** Kok Swee Sim, Shun Wei Wong, Alex Low, Andi  
+- **Year:** 2024  
+- **Technologies:** MediaPipe, YOLOv7, Angle Directive Rules  
+- **Domain:** Body Tracking  
+- **Summary:** Focuses on developing an exercise tracking system capable of recognizing simple exercises (push-ups, pull-ups, sit-ups) with high accuracy using pose estimation techniques.  
+- **Results:** The expand-shrink MLP model achieved **16% higher accuracy** than the baseline model.  
+- **Limitations:** Issues related to data privacy, cost, user experience, interoperability, and regulatory challenges.  
+- **Comments:** The study aims to develop an improved Multi-Layer Perceptron (MLP) model for exercise recognition.
 
 ---
 
-### **Articol 4**
-- **Titlu:** 3D Tracking of Human Motion Using Visual Skeletonization and Stereoscopic Vision  
-- **Autori:** Matteo Zago, Matteo Luzzago, Tommaso Marangoni, Mariolino de Cecco, Marco Tarabini, Manuela Galli  
-- **An:** 2020  
-- **Tehnologii:** OpenPose, camere web low-cost  
-- **Domeniu:** Body Tracking 3D  
-- **Rezumat:** Metodologie bazată pe viziune stereoscopică și reconstruirea 3D a scheletului uman din două fluxuri video sincronizate.  
-- **Rezultate:** Eroare minimă de **1.53 cm** în lungimea pasului, obținută la configurația optimă.  
-- **Limitări:** Studiu pilot pe doar 2 subiecți; necesită extinderea la o populație mai mare și o infrastructură hardware mai complexă.  
-- **Comentarii:** Oferă o analiză metrologică detaliată a OpenPose în contextul analizării mersului.
+### **Paper 3**
+- **Title:** Body Posture Detection Using Computer Vision  
+- **Authors:** Anand Upadhyay, Ketan Chaudhari, Pradip Bhere, Jerin Thomas  
+- **Year:** 2020  
+- **Technologies:** OpenCV, Pyroelectric Infrared Sensors  
+- **Domain:** Body Posture Detection  
+- **Summary:** Focuses on analyzing and understanding human posture and movements from digital images and videos without using external sensors.  
+- **Results:** The OpenCV-based method is more affordable and practical than sensor-based systems.  
+- **Limitations:** Lower accuracy compared to accelerometer/gyroscope-based systems; difficulty detecting poses when obstacles block the camera’s view.  
+- **Comments:** Human body posture recognition has become a key area of computer vision research with significant progress over recent years.
 
 ---
 
-### **Articol 5**
-- **Titlu:** Human Actions Tracking and Recognition Based on Body Parts Detection via Artificial Neural Network  
-- **Autori:** Amir Nadeem, Ahmad Jalal, Kibum Kim  
-- **An:** 2020  
-- **Tehnologii:** Cameră video, Rețele Neuronale Artificiale (ANN)  
-- **Domeniu:** Human Action Recognition  
-- **Rezumat:** Recunoașterea acțiunilor umane prin detecția părților corpului (cap, umeri, mâini, trunchi, șolduri, picioare).  
-- **Rezultate:** Acuratețe de **89.41%** pe dataset-ul Weizmann.  
-- **Limitări:** Dificultăți în diferențierea acțiunilor similare (alergare, pasare, șut).  
-- **Comentarii:** Propune o nouă metodologie bazată pe segmentarea corpului și analiza multidimensională a caracteristicilor.
+### **Paper 4**
+- **Title:** 3D Tracking of Human Motion Using Visual Skeletonization and Stereoscopic Vision  
+- **Authors:** Matteo Zago, Matteo Luzzago, Tommaso Marangoni, Mariolino de Cecco, Marco Tarabini, Manuela Galli  
+- **Year:** 2020  
+- **Technologies:** OpenPose, low-cost webcams  
+- **Domain:** 3D Body Tracking  
+- **Summary:** Proposes a stereoscopic vision method for 3D reconstruction of the human skeleton from synchronized video feeds.  
+- **Results:** The lowest step length error (**1.53 cm**) was achieved with the 1.8 m high-resolution, straight gait setup.  
+- **Limitations:** Pilot study with only two participants; future work should include larger populations and more complex multi-camera setups.  
+- **Comments:** Provides a metrological analysis of OpenPose performance in gait analysis using low-cost stereoscopic vision.
 
 ---
 
-## 🧩 Concluzii generale
-
-Analiza articolelor evidențiază progresele majore realizate în detecția posturii și urmărirea mișcărilor corpului prin:
-- utilizarea **viziunii computerizate** în locul senzorilor fizici;
-- îmbinarea metodelor clasice (OpenCV, OpenPose) cu **rețele neuronale**;
-- dezvoltarea unor sisteme **accesibile și precise** pentru fitness, sănătate și analiză biomecanică.
-
-Totodată, limitările comune (precizia, confidențialitatea datelor, portabilitatea) indică direcțiile viitoare de cercetare.
-
----
-
-## 🛠️ Tehnologii menționate
-- **MediaPipe**  
-- **OpenCV**  
-- **OpenPose**  
-- **YOLOv7**  
-- **ANN (Artificial Neural Networks)**
+### **Paper 5**
+- **Title:** Human Actions Tracking and Recognition Based on Body Parts Detection via Artificial Neural Network  
+- **Authors:** Amir Nadeem, Ahmad Jalal, Kibum Kim  
+- **Year:** 2020  
+- **Technologies:** Camera, Artificial Neural Networks (ANN)  
+- **Domain:** Human Action Recognition  
+- **Summary:** Proposes detecting human actions by segmenting body parts (head, shoulders, hands, torso, hips, feet, knees) and classifying movement using neural networks.  
+- **Results:** Achieved **89.41%** body parts detection accuracy on the Weizmann dataset.  
+- **Limitations:** Confusion between similar actions such as passing, shooting, and running.  
+- **Comments:** Introduces a new body part–based segmentation approach for action recognition using multidimensional feature analysis.
 
 ---
 
-## 📅 An realizare proiect
-2025
-
----
 
 ## 🏫 Universitatea Tehnică „Gheorghe Asachi” din Iași  
 **Facultatea de Automatică și Calculatoare**
