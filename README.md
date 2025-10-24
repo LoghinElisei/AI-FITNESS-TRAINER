@@ -9,7 +9,7 @@
 
 ## 🧠 General Description
 
-
+  Proiectul Body Tracking Detection are ca scop dezvoltarea unui sistem care monitorizeaza si evalueaza calitatea exercitiilor fizice efectuate de o persoana in timp real, folosind o camera video (Zed2i). Sistemul decteaza pozitia corpului si analizeaza miscarile sale pentru a recunoaste diverse exercitii fizice (Flotari, genuflexiuni). 
 
 ---
 
