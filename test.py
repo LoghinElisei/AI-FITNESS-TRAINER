@@ -2,6 +2,8 @@ from typing import runtime_checkable
 
 import cv2
 import pyzed.sl as sl
+import squats
+from squats import Squat, side_length, angle_calc
 
 
 def draw_line (frame, first, end):
@@ -83,6 +85,10 @@ body_runtime_param.detection_confidence_threshold = 40
 bodies = sl.Bodies()
 image = sl.Mat()
 
+#Meniu in care vedem ce exercitiu vom avea ->
+#Acum avem doar squats
+squat = Squat()
+
 while True:
     if zed.grab(runtime_params) == sl.ERROR_CODE.SUCCESS:
         zed.retrieve_image(image, sl.VIEW.LEFT)
@@ -91,22 +97,28 @@ while True:
         if bodies.body_list:
             body = bodies.body_list[0] #avem doar o persoana
             body_parts = []
-
-
             for body_part in body.keypoint_2d:
                 x = body_part[0]
                 y = body_part[1]
                 body_parts.append((int(x), int(y)))
                 if x > 0 and y > 0:
                     cv2.circle(frame, (int(x),int(y)), 5, (0, 255, 0,), -1)
-
-            # print (body_parts)
-
             draw_skeleton(frame, body_parts)
+            #facem update la unghiu de fiecare data
 
+            #luam partea din stanga, am putea sa luam si partea din dreapta pentru mai multa acuratete
+            a_point = body_parts[11] #LEFT_HIP
+            b_point = body_parts[12] #LEFT_KNEE
+            c_point = body_parts[13] #LEFT_ANKLE
 
-            # font = cv2.FONT_HERSHEY_SIMPLEX
-            # cv2.putText(frame, 'OpenCV', (10, 500), font, 4, (255, 255, 255), 2, cv2.LINE_AA)
+            squat.new_angle(a_point, b_point, c_point)
+            squat.event()
+
+            #modificam angle din Squat
+
+            #Scriem rezultatul pe ecran
+            font = cv2.FONT_HERSHEY_SIMPLEX
+            cv2.putText(frame, squat.get_number_count(), (10, 10), font, 4, (255, 255, 255), 2, cv2.LINE_AA)
 
         cv2.imshow("Zed2i - live", frame)
 
