@@ -118,7 +118,7 @@ while True:
 
             #Scriem rezultatul pe ecran
             font = cv2.FONT_HERSHEY_SIMPLEX
-            cv2.putText(frame, squat.get_number_count(), (10, 10), font, 4, (255, 255, 255), 2, cv2.LINE_AA)
+            cv2.putText(frame, squat.get_number_count(), (100, 100), font, 4, (255, 255, 255), 2, cv2.LINE_AA)
 
         cv2.imshow("Zed2i - live", frame)
 

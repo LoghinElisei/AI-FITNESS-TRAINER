@@ -23,12 +23,12 @@
    modelised skeleton in an OpenGL window
 """
 import cv2
-import sys
 import pyzed.sl as sl
-import ogl_viewer.viewer as gl
 import cv_viewer.tracking_viewer as cv_viewer
-import numpy as np
 import argparse
+from screeninfo import get_monitors
+from sources.pose_detection import detect_squats
+
 
 def parse_args(init, opt):
     if len(opt.input_svo_file)>0 and opt.input_svo_file.endswith((".svo", ".svo2")):
@@ -69,10 +69,11 @@ def parse_args(init, opt):
 
 
 
+
 def main(opt):
     print("Running Body Tracking sample ... Press 'q' to quit, or 'm' to pause or restart")
-
     # Create a Camera object
+
     zed = sl.Camera()
 
     # Create a InitParameters object and set configuration parameters
@@ -97,8 +98,8 @@ def main(opt):
     
     body_param = sl.BodyTrackingParameters()
     body_param.enable_tracking = True                # Track people across images flow
-    body_param.enable_body_fitting = False            # Smooth skeleton move
-    body_param.detection_model = sl.BODY_TRACKING_MODEL.HUMAN_BODY_FAST 
+    body_param.enable_body_fitting = True            # Smooth skeleton move
+    body_param.detection_model = sl.BODY_TRACKING_MODEL.HUMAN_BODY_FAST
     body_param.body_format = sl.BODY_FORMAT.BODY_18  # Choose the BODY_FORMAT you wish to use
 
     # Enable Object Detection module
@@ -110,42 +111,58 @@ def main(opt):
     # Get ZED camera information
     camera_info = zed.get_camera_information()
     # 2D viewer utilities
-    display_resolution = sl.Resolution(min(camera_info.camera_configuration.resolution.width, 1280), min(camera_info.camera_configuration.resolution.height, 720))
+
+    #############
+    monitor = get_monitors()[0]
+    screen_width = monitor.width
+    screen_height = monitor.height
+    ############
+
+    # display_resolution = sl.Resolution(min(camera_info.camera_configuration.resolution.width,screen_width), min(camera_info.camera_configuration.resolution.height, screen_height))
+    display_resolution = sl.Resolution(screen_width,  screen_height)
     image_scale = [display_resolution.width / camera_info.camera_configuration.resolution.width
                  , display_resolution.height / camera_info.camera_configuration.resolution.height]
 
-    # Create OpenGL viewer
-    viewer = gl.GLViewer()
-    viewer.init(camera_info.camera_configuration.calibration_parameters.left_cam, body_param.enable_tracking,body_param.body_format)
+
     # Create ZED objects filled in the main loop
     bodies = sl.Bodies()
     image = sl.Mat()
     key_wait = 10 
-    while viewer.is_available():
+    while True:
         # Grab an image
         if zed.grab() <= sl.ERROR_CODE.SUCCESS:
             # Retrieve left image
             zed.retrieve_image(image, sl.VIEW.LEFT, sl.MEM.CPU, display_resolution)
             # Retrieve bodies
             zed.retrieve_bodies(bodies, body_runtime_param)
-            # Update GL view
-            viewer.update_view(image, bodies) 
+
+            main_body = bodies.body_list
+            if len(bodies.body_list) > 0:
+                main_body = [bodies.body_list[0]]  #take the main character, not all for rendering
+
             # Update OCV view
             image_left_ocv = image.get_data()
-            cv_viewer.render_2D(image_left_ocv,image_scale, bodies.body_list, body_param.enable_tracking, body_param.body_format)
+            cv_viewer.render_2D(image_left_ocv,image_scale, main_body, body_param.enable_tracking, body_param.body_format)
+            main_body = main_body[0]
+
+            detect_squats(image_left_ocv,main_body)
+
+
             cv2.imshow("ZED | 2D View", image_left_ocv)
+
             key = cv2.waitKey(key_wait)
             if key == 113: # for 'q' key
                 print("Exiting...")
                 break
             if key == 109: # for 'm' key
-                if (key_wait>0):
+                if key_wait>0:
                     print("Pause")
                     key_wait = 0 
                 else : 
                     print("Restart")
-                    key_wait = 10 
-    viewer.exit()
+                    key_wait = 10
+
+
     image.free(sl.MEM.CPU)
     zed.disable_body_tracking()
     zed.disable_positional_tracking()

@@ -11,6 +11,7 @@ from numpy.ma.core import arccos
 class Squat:
     def __init__(self):
         self.state = "S0"
+
         self.angle = 180 #in grade calculat
         self.number_counter = 0
         self.rep_made = 0
@@ -51,7 +52,7 @@ class Squat:
 def angle_calc (a, b, c):
     #ne folosim de formula c2 = a2 + b2 − 2ab cos(C)
     #noua ne trebuie unghiul b
-    cos = (c * c + a * a - b * b) / (2 * c * a)
+    cos = (c * c + a * a - b * b) / (2 * c * a+0.00001)
     angle = arccos (cos)
     return angle
 
