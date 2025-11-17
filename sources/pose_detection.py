@@ -1,33 +1,29 @@
 import cv2
 import numpy as np
 
-state = "STAND"
-squat_count = 0
-
-
 def angle_3d(a, b, c):
     ba = a - b
     bc = c - b
     cosine = np.dot(ba, bc) / (np.linalg.norm(ba) * np.linalg.norm(bc))
     return np.degrees(np.arccos(np.clip(cosine, -1.0, 1.0)))
 
-org = (520,100)
+org1 = (520,100)
+org2 = (50,900)
 font = cv2.FONT_HERSHEY_SIMPLEX
 thickness = 3
 font_scale = 2
 text_format = "LOW CONFIDENCE Squats: 100 "
 
-def paint_text_on_display(frame,val1,val2,color):
-
+def paint_squats_on_display(frame,val1,val2,color):
     cv2.putText(frame,
-                f"{(val1)} Squats: {val2}",
-                org,
+                f"{val1} Squats: {val2}",
+                org1,
                 font,
                 2,
                 color,
                 3)
 
-def paint_on_display(frame):
+def paint_on_display(frame,org):
     (text_w,text_h),baseline = cv2.getTextSize(text_format,font,font_scale,thickness)
     cv2.rectangle(frame,
                   (org[0] - 10, org[1] -text_h- 10),
@@ -35,25 +31,83 @@ def paint_on_display(frame):
                   (30,30,30),
                   -1)
 
-def detect_squats(image_left_ocv,main_body):
-    global squat_count, state
+def paint_text_on_display(frame,text,org):
+    (text_w, text_h), baseline = cv2.getTextSize(text, font, font_scale, thickness)
+    cv2.rectangle(frame,
+                  (org[0] - 10, org[1] - text_h - 10),
+                  (org[0] + text_w + 10, org[1] + baseline + 10),
+                  (30, 30, 30),
+                  -1)
+
+    cv2.putText(frame,
+                text,
+               org2,
+                font,
+                2,
+                (0,255,0),
+                3)
 
 
-    if main_body.keypoint_confidence[9] > 0.3 and main_body.keypoint_confidence[8] > 0.3 and main_body.keypoint_confidence[10] > 0.3:
-        right_knee = main_body.keypoint[9]
-        right_hip = main_body.keypoint[8]
-        right_ankle = main_body.keypoint[10]
+def detect_squats(main_body):
+    right_knee = main_body.keypoint[9]
+    right_hip = main_body.keypoint[8]
+    right_ankle = main_body.keypoint[10]
+    knee_angle = angle_3d(right_hip, right_knee, right_ankle)
+    return knee_angle
 
-        knee_angle = angle_3d(right_hip, right_knee, right_ankle)
-        if state == "STAND" and knee_angle < 90:
-            state = "SQUAT"
 
-        if state == "SQUAT" and knee_angle > 150:
-            state = "STAND"
-            squat_count += 1
+def verify_confidence(main_body) -> bool:
+    return main_body.keypoint_confidence[9] > 0.3 and main_body.keypoint_confidence[8] > 0.3 and main_body.keypoint_confidence[10] > 0.3
 
-        paint_on_display(image_left_ocv)
-        paint_text_on_display(image_left_ocv,f"Angle: {int(knee_angle)}",squat_count,(0, 255, 0))
-    else:
-        paint_on_display(image_left_ocv)
-        paint_text_on_display(image_left_ocv, "LOW CONFIDENCE",squat_count, (0, 0, 255))
+
+class Squat:
+    def __init__(self):
+        self.state = "S0"
+        self.angle = 180
+        self.squat_counter = 0
+        self.rep_made = 0
+        self.message = "Start"
+
+    def paint(self,image_left_ocv,main_body):
+        if main_body.keypoint_confidence[9] > 0.3 and main_body.keypoint_confidence[8] > 0.3 and \
+                main_body.keypoint_confidence[10] > 0.3:
+
+            paint_on_display(image_left_ocv,org1)
+            paint_squats_on_display(image_left_ocv, f"Angle: {int(self.angle)}", self.squat_counter, (0, 255, 0))
+
+
+        else:
+            paint_on_display(image_left_ocv,org1)
+            paint_squats_on_display(image_left_ocv, "LOW CONFIDENCE", self.squat_counter, (0, 0, 255))
+
+        if self.state == "S0":
+            paint_text_on_display(image_left_ocv,self.message,org2)
+
+    def detect(self, main_body):
+        if verify_confidence(main_body):
+            self.angle = detect_squats(main_body)
+            if self.state == "S0":
+
+                if self.rep_made == 1:
+                    self.squat_counter = self.squat_counter + 1
+                    self.rep_made = 0 #Resetam repetarea
+                if self.angle < 130:
+                    self.state = "S1"
+
+            #Starea intermediara
+            elif self.state == "S1":
+                if self.angle < 90:
+                    self.state = "S2"
+                elif self.angle > 130:
+                    self.state = "S0"
+                    if self.rep_made == 0:
+                        self.message = "You should go deeper"
+                elif self.angle > 90 and self.rep_made==0 :
+                    self.message = "Go deeper"
+
+            #starea finala
+            elif self.state == "S2":
+                self.rep_made = 1
+                if self.angle > 90:
+                    self.state = "S1"
+                    self.message = "Good Job"

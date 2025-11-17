@@ -27,7 +27,7 @@ import pyzed.sl as sl
 import cv_viewer.tracking_viewer as cv_viewer
 import argparse
 from screeninfo import get_monitors
-from sources.pose_detection import detect_squats
+from sources.pose_detection import detect_squats, Squat
 
 
 def parse_args(init, opt):
@@ -73,7 +73,7 @@ def parse_args(init, opt):
 def main(opt):
     print("Running Body Tracking sample ... Press 'q' to quit, or 'm' to pause or restart")
     # Create a Camera object
-
+    squats = Squat()
     zed = sl.Camera()
 
     # Create a InitParameters object and set configuration parameters
@@ -136,17 +136,18 @@ def main(opt):
             # Retrieve bodies
             zed.retrieve_bodies(bodies, body_runtime_param)
 
-            main_body = bodies.body_list
+            image_left_ocv = image.get_data()
             if len(bodies.body_list) > 0:
                 main_body = [bodies.body_list[0]]  #take the main character, not all for rendering
 
-            # Update OCV view
-            image_left_ocv = image.get_data()
-            cv_viewer.render_2D(image_left_ocv,image_scale, main_body, body_param.enable_tracking, body_param.body_format)
-            main_body = main_body[0]
+                # Update OCV view
 
-            detect_squats(image_left_ocv,main_body)
+                cv_viewer.render_2D(image_left_ocv,image_scale, main_body, body_param.enable_tracking, body_param.body_format)
+                main_body = main_body[0]
 
+                # detect_squats(image_left_ocv,main_body)
+                squats.detect(main_body)
+                squats.paint(image_left_ocv,main_body)
 
             cv2.imshow("ZED | 2D View", image_left_ocv)
 
