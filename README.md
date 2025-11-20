@@ -87,7 +87,7 @@
 ---
 ## 📐 System Architecture
 <p align="center">
-  <img src="images/arhitectura2.jpg">
+  <img src="images/Arhitectura2.jpg">
 </p>
 
 
