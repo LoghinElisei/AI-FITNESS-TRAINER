@@ -11,53 +11,75 @@ def angle_3d(a, b, c):
     cosine = np.dot(ba, bc) / (np.linalg.norm(ba) * np.linalg.norm(bc))
     return np.degrees(np.arccos(np.clip(cosine, -1.0, 1.0)))
 
-org1 = (520,100)
-org2 = (50,900)
-org3 = (800,100)
-org4 = (800,300)
+
+import cv2
+
+# --- Globalele tale (Constante) ---
+org1 = (520, 100)
+org2 = (50, 900)
+org3 = (1200, 300)
+org4 = (1200, 400)
+org5 = (20,1000)
+org6 = (520,200)
 font = cv2.FONT_HERSHEY_SIMPLEX
 thickness = 3
 font_scale = 2
 text_format = "LOW CONFIDENCE Squats: 100 "
 
-def paint_squats_on_display(frame,val1,val2,color):
-    cv2.putText(frame,
-                f"{val1} Squats: {val2}",
-                org1,
-                font,
-                2,
-                color,
-                3)
 
-def paint_on_display(frame,org):
-    (text_w,text_h),baseline = cv2.getTextSize(text_format,font,font_scale,thickness)
+def _draw_text_with_bg(frame, text, org, color, bg_color):
+
+    (text_w, text_h), baseline = cv2.getTextSize(text, font, font_scale, thickness)
+
+    x, y = org
+    padding = 10
+
     cv2.rectangle(frame,
-                  (org[0] - 10, org[1] -text_h- 10),
-                  (org[0] + text_w +  10, org[1] +baseline + 10),
-                  (30,30,30),
+                  (x - padding, y - text_h - padding),  # Stânga-Sus
+                  (x + text_w + padding, y + baseline + padding),  # Dreapta-Jos
+                  bg_color,
                   -1)
 
-def paint_text_on_display(frame,text,org):
+    # 3. Desenăm textul peste dreptunghi
+    cv2.putText(frame,
+                text,
+                org,
+                font,
+                font_scale,
+                color,
+                thickness)
+
+
+def paint_squats_on_display(frame, val1, val2, color):
+
+    text = f"{val1} Squats: {val2}"
+    _draw_text_with_bg(frame, text, org1, color, (30, 30, 30))
+
+
+def paint(frame, text, org, color, background_color):
+    _draw_text_with_bg(frame, text, org, color, background_color)
+
+
+# --- Funcții Vechi (păstrate pentru compatibilitate, dar reparate) ---
+
+def paint_on_display_background(frame, org):
+
+
+    (text_w, text_h), baseline = cv2.getTextSize(text_format, font, font_scale, thickness)
+    cv2.rectangle(frame,
+                  (org[0] - 10, org[1] - text_h - 10),
+                  (org[0] + text_w + 10, org[1] + baseline + 10),
+                  (30, 30, 30),
+                  -1)
+
+
+def paint_text_on_display(frame, text, org):
     (text_w, text_h), baseline = cv2.getTextSize(text, font, font_scale, thickness)
     cv2.rectangle(frame,
                   (org[0] - 10, org[1] - text_h - 10),
                   (org[0] + text_w + 10, org[1] + baseline + 10),
                   (30, 30, 30),
                   -1)
-def paint(frame,text,org,color,background_color):
-    (text_w, text_h), baseline = cv2.getTextSize(text, font, font_scale, thickness)
-    cv2.rectangle(frame,
-                  (org[0] - 10, org[1] - text_h - 10),
-                  (org[0] + text_w + 10, org[1] + baseline + 10),
-                  background_color,
-                  -1)
-    cv2.putText(frame,
-                text,
-               org2,
-                font,
-                2,
-                color,
-                3)
 
 
 def compute_knee_angle(main_body):
@@ -134,17 +156,18 @@ class Squat:
         if main_body.keypoint_confidence[9] > 0.3 and main_body.keypoint_confidence[8] > 0.3 and \
                 main_body.keypoint_confidence[10] > 0.3:
 
-            paint_on_display(image_left_ocv,org1)
+            paint_on_display_background(image_left_ocv,org1)
             paint_squats_on_display(image_left_ocv, f"Knee Angle: {int(self.knee_angle)}", self.squat_counter, (0, 255, 0))
-            # paint(image_left_ocv,f"CORRECT : {self.correct}: ",org3,color=(255,255,255),background_color=(0,255,0))
-            # paint(image_left_ocv, f"INCORRECT : {self.incorrect}: ", org4,color=(255,255,255),background_color=(0,0,255))
+            paint(image_left_ocv,f"CORRECT : {self.correct} ",org3,color=(255,255,255),background_color=(0,255,0))
+            paint(image_left_ocv, f"INCORRECT : {self.incorrect} ", org4,color=(255,255,255),background_color=(0,0,255))
+            paint(image_left_ocv, f"Back Angle: {int(self.back_angle)}", org6,color=(0,255,0),background_color=(0,0,0))
 
         else:
-            paint_on_display(image_left_ocv,org1)
+            paint_on_display_background(image_left_ocv,org1)
             paint_squats_on_display(image_left_ocv, "LOW CONFIDENCE", self.squat_counter, (0, 0, 255))
 
-        if self.state == "S0":
-            paint_text_on_display(image_left_ocv,self.message,org2)
+        if self.message != "":
+            paint(image_left_ocv, self.message, org5,color=(255,255,255),background_color=(0,0,255))
 
 
 
@@ -161,9 +184,11 @@ class Squat:
                     if self.state == "S0":
 
                         if len(self.state_queue) == 0:
-                            if 100 > self.back_angle > 80:
+                            if self.back_angle > 50:
                                 self.message="BEND BACKWARDS"
                                 self.wrong_movement = True
+                            else:
+                                self.message=""
                             if self.knee_angle < 130:
                                 self.state = "S1"
                                 self.last_state = "S0"
@@ -179,15 +204,24 @@ class Squat:
 
                     #Starea intermediara
                     elif self.state == "S1":
-                        if self.last_state != "S1":
-                            self.state_queue.append("S1")
-                            self.last_state = "S1"
+                        # if self.last_state != "S1":
+                        #     self.state_queue.append("S1")
+                        #     self.last_state = "S1"
 
                         if self.knee_angle < 90:
                             self.state = "S2"
+                            self.state_queue.append("S1")
+                            self.last_state = "S1"
+
                         elif self.knee_angle > 130:
                             self.state = "S0"
+                            self.state_queue.append("S1")
+                            self.last_state = "S1"
 
+                        if self.last_state == "S0":
+                            self.message="Go Deeper"
+                        else:
+                            self.message=""
 
                     #starea finala
                     elif self.state == "S2":
