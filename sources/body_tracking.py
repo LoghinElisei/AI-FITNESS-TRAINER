@@ -27,7 +27,7 @@ import pyzed.sl as sl
 import cv_viewer.tracking_viewer as cv_viewer
 import argparse
 from screeninfo import get_monitors
-from sources.pose_detection import detect_squats, Squat
+from sources.pose_detection import Squat
 
 
 def parse_args(init, opt):
@@ -99,8 +99,8 @@ def main(opt):
     
     body_param = sl.BodyTrackingParameters()
     body_param.enable_tracking = True                # Track people across images flow
-    body_param.enable_body_fitting = True            # Smooth skeleton move
-    body_param.detection_model = sl.BODY_TRACKING_MODEL.HUMAN_BODY_ACCURATE
+    body_param.enable_body_fitting = False            # Smooth skeleton move
+    body_param.detection_model = sl.BODY_TRACKING_MODEL.HUMAN_BODY_MEDIUM
     body_param.body_format = sl.BODY_FORMAT.BODY_34  # Choose the BODY_FORMAT you wish to use
 
     # Enable Object Detection module

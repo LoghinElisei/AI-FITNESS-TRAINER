@@ -13,6 +13,8 @@ def angle_3d(a, b, c):
 
 org1 = (520,100)
 org2 = (50,900)
+org3 = (800,100)
+org4 = (800,300)
 font = cv2.FONT_HERSHEY_SIMPLEX
 thickness = 3
 font_scale = 2
@@ -42,25 +44,59 @@ def paint_text_on_display(frame,text,org):
                   (org[0] + text_w + 10, org[1] + baseline + 10),
                   (30, 30, 30),
                   -1)
-
+def paint(frame,text,org,color,background_color):
+    (text_w, text_h), baseline = cv2.getTextSize(text, font, font_scale, thickness)
+    cv2.rectangle(frame,
+                  (org[0] - 10, org[1] - text_h - 10),
+                  (org[0] + text_w + 10, org[1] + baseline + 10),
+                  background_color,
+                  -1)
     cv2.putText(frame,
                 text,
                org2,
                 font,
                 2,
-                (0,255,0),
+                color,
                 3)
 
 
-def detect_squats(main_body):
+def compute_knee_angle(main_body):
     # right_knee = main_body.keypoint[9]
     # right_hip = main_body.keypoint[8]
     # right_ankle = main_body.keypoint[10]
+
     right_knee = main_body.keypoint[23]
     right_hip = main_body.keypoint[22]
     right_ankle = main_body.keypoint[24]
-    knee_angle = angle_3d(right_hip, right_knee, right_ankle)
-    return knee_angle
+
+    right_knee_angle = angle_3d(right_hip, right_knee, right_ankle)
+
+    left_knee = main_body.keypoint[19]
+    left_hip = main_body.keypoint[18]
+    left_ankle = main_body.keypoint[20]
+    left_knee_angle = angle_3d(left_hip, left_knee, left_ankle)
+
+
+
+    return left_knee_angle,right_knee_angle
+
+def compute_back_angle(main_body):
+
+    # pelvis = main_body.keypoint[0]
+    # neck = main_body.keypoint[3]
+    # right_knee = main_body.keypoint[23]
+    #
+    # back_angle = angle_3d(neck,pelvis,right_knee)
+    #
+
+    pelvis = main_body.keypoint[0]
+    neck = main_body.keypoint[3]
+    perpendicular_point = np.array([pelvis[0],neck[1],pelvis[2]])
+
+    back_angle = angle_3d(neck,pelvis,perpendicular_point)
+
+    return back_angle
+
 
 
 def verify_confidence(main_body) -> bool:
@@ -70,23 +106,38 @@ def play_beep_async():
     threading.Thread(target=lambda: winsound.Beep(700, 500), daemon=True).start()
 
 
+def exercises_is_correct(queue:list)->bool:
+    #for correct exercises, we must have [S1,S2,S1]
+    if len(queue) == 3:
+        print(f"******** BRAVO {queue} *******")
+        return True
+    else:
+        return False
+
+
 
 class Squat:
     def __init__(self):
         self.state = "S0"
-        self.angle = 180
+        self.knee_angle = 180
+        self.back_angle = 180
         self.squat_counter = 0
         self.rep_made = 0
         self.message = "Start"
-        
+        self.state_queue = []
+        self.wrong_movement = False
+        self.correct = 0
+        self.incorrect = 0
+        self.last_state = "S0"
 
     def paint(self,image_left_ocv,main_body):
         if main_body.keypoint_confidence[9] > 0.3 and main_body.keypoint_confidence[8] > 0.3 and \
                 main_body.keypoint_confidence[10] > 0.3:
 
             paint_on_display(image_left_ocv,org1)
-            paint_squats_on_display(image_left_ocv, f"Angle: {int(self.angle)}", self.squat_counter, (0, 255, 0))
-
+            paint_squats_on_display(image_left_ocv, f"Knee Angle: {int(self.knee_angle)}", self.squat_counter, (0, 255, 0))
+            # paint(image_left_ocv,f"CORRECT : {self.correct}: ",org3,color=(255,255,255),background_color=(0,255,0))
+            # paint(image_left_ocv, f"INCORRECT : {self.incorrect}: ", org4,color=(255,255,255),background_color=(0,0,255))
 
         else:
             paint_on_display(image_left_ocv,org1)
@@ -95,32 +146,58 @@ class Squat:
         if self.state == "S0":
             paint_text_on_display(image_left_ocv,self.message,org2)
 
+
+
     def detect(self, main_body):
-        if verify_confidence(main_body):
-            self.angle = detect_squats(main_body)
-            if self.state == "S0":
+            if verify_confidence(main_body):
 
-                if self.rep_made == 1:
-                    self.squat_counter = self.squat_counter + 1
-                    self.rep_made = 0 #Resetam repetarea
-                if self.angle < 130:
-                    self.state = "S1"
+                left_knee_angle, right_knee_angle = compute_knee_angle(main_body)
+                self.back_angle = compute_back_angle(main_body)
 
-            #Starea intermediara
-            elif self.state == "S1":
-                if self.angle < 90:
-                    self.state = "S2"
-                elif self.angle > 130:
-                    self.state = "S0"
-                    if self.rep_made == 0:
-                        self.message = "You should go deeper"
-                elif self.angle > 90 and self.rep_made==0 :
-                    self.message = "Go deeper"
+                if abs(left_knee_angle - right_knee_angle) < 50:
 
-            #starea finala
-            elif self.state == "S2":
-                self.rep_made = 1
-                if self.angle > 90:
-                    self.state = "S1"
-                    self.message = "Good Job"
-                    play_beep_async()
+                    self.knee_angle = right_knee_angle
+
+                    if self.state == "S0":
+
+                        if len(self.state_queue) == 0:
+                            if 100 > self.back_angle > 80:
+                                self.message="BEND BACKWARDS"
+                                self.wrong_movement = True
+                            if self.knee_angle < 130:
+                                self.state = "S1"
+                                self.last_state = "S0"
+                        else:
+                            if exercises_is_correct(self.state_queue) and self.wrong_movement == False:
+                                self.correct +=1
+                            else:
+                                self.incorrect +=1
+
+                            self.state_queue = []
+                            self.wrong_movement = False
+
+
+                    #Starea intermediara
+                    elif self.state == "S1":
+                        if self.last_state != "S1":
+                            self.state_queue.append("S1")
+                            self.last_state = "S1"
+
+                        if self.knee_angle < 90:
+                            self.state = "S2"
+                        elif self.knee_angle > 130:
+                            self.state = "S0"
+
+
+                    #starea finala
+                    elif self.state == "S2":
+                        if self.last_state != "S2":
+                            self.state_queue.append("S2")
+                            self.last_state = "S2"
+
+                        if self.knee_angle > 90:
+                            self.state = "S1"
+                            play_beep_async()
+
+    def verify_movement(self,main_body):
+       pass
