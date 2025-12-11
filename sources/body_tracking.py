@@ -70,6 +70,7 @@ def parse_args(init, opt):
 
 
 
+
 def main(opt):
     print("Running Body Tracking sample ... Press 'q' to quit, or 'm' to pause or restart")
     # Create a Camera object
@@ -99,8 +100,8 @@ def main(opt):
     body_param = sl.BodyTrackingParameters()
     body_param.enable_tracking = True                # Track people across images flow
     body_param.enable_body_fitting = True            # Smooth skeleton move
-    body_param.detection_model = sl.BODY_TRACKING_MODEL.HUMAN_BODY_FAST
-    body_param.body_format = sl.BODY_FORMAT.BODY_18  # Choose the BODY_FORMAT you wish to use
+    body_param.detection_model = sl.BODY_TRACKING_MODEL.HUMAN_BODY_ACCURATE
+    body_param.body_format = sl.BODY_FORMAT.BODY_34  # Choose the BODY_FORMAT you wish to use
 
     # Enable Object Detection module
     zed.enable_body_tracking(body_param)
@@ -127,7 +128,10 @@ def main(opt):
     # Create ZED objects filled in the main loop
     bodies = sl.Bodies()
     image = sl.Mat()
-    key_wait = 10 
+    key_wait = 10
+
+    exercises_type = 0 #squats
+
     while True:
         # Grab an image
         if zed.grab() <= sl.ERROR_CODE.SUCCESS:
@@ -146,8 +150,14 @@ def main(opt):
                 main_body = main_body[0]
 
                 # detect_squats(image_left_ocv,main_body)
-                squats.detect(main_body)
-                squats.paint(image_left_ocv,main_body)
+                match exercises_type:
+                    case 0: #squats
+                        squats.detect(main_body)
+                        squats.paint(image_left_ocv, main_body)
+                    case 1: #push-up
+                        squats.detect(main_body)
+                        squats.paint(image_left_ocv, main_body)
+                        print("[Sample] Body detected")
 
             cv2.imshow("ZED | 2D View", image_left_ocv)
 
@@ -162,6 +172,9 @@ def main(opt):
                 else : 
                     print("Restart")
                     key_wait = 10
+            if key == 110: #for 'n' key ->next exercises
+                exercises_type = (exercises_type+1) % 2
+
 
 
     image.free(sl.MEM.CPU)

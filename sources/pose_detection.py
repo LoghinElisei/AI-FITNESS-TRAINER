@@ -1,5 +1,9 @@
+import threading
+
 import cv2
 import numpy as np
+import winsound
+
 
 def angle_3d(a, b, c):
     ba = a - b
@@ -49,15 +53,22 @@ def paint_text_on_display(frame,text,org):
 
 
 def detect_squats(main_body):
-    right_knee = main_body.keypoint[9]
-    right_hip = main_body.keypoint[8]
-    right_ankle = main_body.keypoint[10]
+    # right_knee = main_body.keypoint[9]
+    # right_hip = main_body.keypoint[8]
+    # right_ankle = main_body.keypoint[10]
+    right_knee = main_body.keypoint[23]
+    right_hip = main_body.keypoint[22]
+    right_ankle = main_body.keypoint[24]
     knee_angle = angle_3d(right_hip, right_knee, right_ankle)
     return knee_angle
 
 
 def verify_confidence(main_body) -> bool:
     return main_body.keypoint_confidence[9] > 0.3 and main_body.keypoint_confidence[8] > 0.3 and main_body.keypoint_confidence[10] > 0.3
+
+def play_beep_async():
+    threading.Thread(target=lambda: winsound.Beep(700, 500), daemon=True).start()
+
 
 
 class Squat:
@@ -67,6 +78,7 @@ class Squat:
         self.squat_counter = 0
         self.rep_made = 0
         self.message = "Start"
+        
 
     def paint(self,image_left_ocv,main_body):
         if main_body.keypoint_confidence[9] > 0.3 and main_body.keypoint_confidence[8] > 0.3 and \
@@ -111,3 +123,4 @@ class Squat:
                 if self.angle > 90:
                     self.state = "S1"
                     self.message = "Good Job"
+                    play_beep_async()
