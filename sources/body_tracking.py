@@ -29,6 +29,7 @@ import argparse
 from screeninfo import get_monitors
 from squats import *
 from push_ups import *
+from jumping_jacks import *
 
 def parse_args(init, opt):
     if len(opt.input_svo_file)>0 and opt.input_svo_file.endswith((".svo", ".svo2")):
@@ -76,6 +77,7 @@ def main(opt):
     # Create a Camera object
     squats = Squat()
     pushUps = PushUps()
+    jumping_jacks = JumpingJacks()
     zed = sl.Camera()
 
     # Create a InitParameters object and set configuration parameters
@@ -155,9 +157,13 @@ def main(opt):
                     case 0: #squats
                         squats.detect(main_body)
                         squats.paint(image_left_ocv, main_body)
-                    case 1: #push-up
+                    case 1: # jumping_jacks
+                        jumping_jacks.detect(main_body)
+                        jumping_jacks.paint(image_left_ocv, main_body)
+                    case 2: #push-up
                         pushUps.detect(main_body)
                         pushUps.paint(image_left_ocv, main_body)
+
 
             cv2.imshow("ZED | 2D View", image_left_ocv)
 
@@ -172,8 +178,9 @@ def main(opt):
                 else : 
                     print("Restart")
                     key_wait = 10
+
             if key == 110: #for 'n' key ->next exercises
-                exercises_type = (exercises_type+1) % 2
+                exercises_type = (exercises_type+1) % 3
 
 
 
