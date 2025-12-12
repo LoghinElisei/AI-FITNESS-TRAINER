@@ -27,8 +27,8 @@ import pyzed.sl as sl
 import cv_viewer.tracking_viewer as cv_viewer
 import argparse
 from screeninfo import get_monitors
-from sources.pose_detection import Squat
-
+from squats import *
+from push_ups import *
 
 def parse_args(init, opt):
     if len(opt.input_svo_file)>0 and opt.input_svo_file.endswith((".svo", ".svo2")):
@@ -75,6 +75,7 @@ def main(opt):
     print("Running Body Tracking sample ... Press 'q' to quit, or 'm' to pause or restart")
     # Create a Camera object
     squats = Squat()
+    pushUps = PushUps()
     zed = sl.Camera()
 
     # Create a InitParameters object and set configuration parameters
@@ -94,14 +95,14 @@ def main(opt):
     # Enable Positional tracking (mandatory for object detection)
     positional_tracking_parameters = sl.PositionalTrackingParameters()
     # If the camera is static, uncomment the following line to have better performances
-    # positional_tracking_parameters.set_as_static = True
+    positional_tracking_parameters.set_as_static = True
     zed.enable_positional_tracking(positional_tracking_parameters)
     
     body_param = sl.BodyTrackingParameters()
-    body_param.enable_tracking = True                # Track people across images flow
-    body_param.enable_body_fitting = False            # Smooth skeleton move
-    body_param.detection_model = sl.BODY_TRACKING_MODEL.HUMAN_BODY_MEDIUM
-    body_param.body_format = sl.BODY_FORMAT.BODY_34  # Choose the BODY_FORMAT you wish to use
+    body_param.enable_tracking = True               # Track people across images flow
+    body_param.enable_body_fitting = False          # Smooth skeleton move
+    body_param.detection_model = sl.BODY_TRACKING_MODEL.HUMAN_BODY_ACCURATE
+    body_param.body_format = sl.BODY_FORMAT.BODY_34 # Choose the BODY_FORMAT you wish to use
 
     # Enable Object Detection module
     zed.enable_body_tracking(body_param)
@@ -155,9 +156,8 @@ def main(opt):
                         squats.detect(main_body)
                         squats.paint(image_left_ocv, main_body)
                     case 1: #push-up
-                        squats.detect(main_body)
-                        squats.paint(image_left_ocv, main_body)
-                        print("[Sample] Body detected")
+                        pushUps.detect(main_body)
+                        pushUps.paint(image_left_ocv, main_body)
 
             cv2.imshow("ZED | 2D View", image_left_ocv)
 
