@@ -8,29 +8,37 @@ class Squat:
         self.knee_angle = 180
         self.back_angle = 180
         self.message = "Start"
+        self.message_template =[colorRed,colorWhite] # [background, text]
+        self.message_state = "STANDING"
+        # self.feedback_message = "Start"
         self.state_queue = []
         self.wrong_movement = False
         self.correct = 0
         self.incorrect = 0
         self.last_state = "S0"
 
-    def paint(self,image_left_ocv,main_body):
-        if main_body.keypoint_confidence[9] > 0.3 and main_body.keypoint_confidence[8] > 0.3 and \
-                main_body.keypoint_confidence[10] > 0.3:
 
-            paint_on_display_background(image_left_ocv,org1)
-            paint_rep_on_display(image_left_ocv, f"Knee Angle: {int(self.knee_angle)}","Squats", (0, 255, 0))
-            paint(image_left_ocv,f"CORRECT : {self.correct} ",org3,color=(255,255,255),background_color=(0,255,0))
-            paint(image_left_ocv, f"INCORRECT : {self.incorrect} ", org4,color=(255,255,255),background_color=(0,0,255))
-            paint(image_left_ocv, f"Back Angle: {int(self.back_angle)}", org6,color=(0,255,0),background_color=(0,0,0))
+    def paint(self,image_left_ocv,main_body):
+        paint(image_left_ocv,"SQUATS",orgTitle,color=(252, 34, 0),background_color=(14,201, 255))
+        if verify_confidence(main_body):
+            # paint_on_display_background(image_left_ocv,org1)
+            # paint_rep_on_display(image_left_ocv, f"Knee Angle: {int(self.knee_angle)}","Squats", (0, 255, 0))
+            paint(image_left_ocv,f"CORRECT : {self.correct}  ",org3,color=(255,255,255),background_color=(0,255,0))
+            paint(image_left_ocv, f"INCORRECT : {self.incorrect}", org4,color=(255,255,255),background_color=(0,0,255))
+            paint(image_left_ocv, f"Back Angle: {int(self.back_angle)}", orgInfo1,color=(0,255,0),background_color=(0,0,0))
+            paint(image_left_ocv, f"Knee Angle: {int(self.knee_angle)}", orgInfo2, color=(0, 255, 0),background_color=(0, 0, 0))
+            paint(image_left_ocv,f"STATE: {self.message_state}", orgState, colorBlack, colorTurquoise)
+            if self.message == "BODY NOT FULLY DETECTED":
+                self.message = ""
 
         else:
-            paint_on_display_background(image_left_ocv,org1)
-            paint_rep_on_display(image_left_ocv, "LOW CONFIDENCE","Squats", (0, 0, 255))
-
+            # paint_on_display_background(image_left_ocv,org1)
+            # paint_rep_on_display(image_left_ocv, "LOW CONFIDENCE","Squats", (0, 0, 255))
+            paint(image_left_ocv, "LOW CONFIDENCE", org1, color=(0,0,255), background_color=(0, 0, 0))
+            self.message = "BODY NOT FULLY DETECTED"
+            self.message_template = [colorRed, colorWhite]
         if self.message != "":
-            paint(image_left_ocv, self.message, org5,color=(255,255,255),background_color=(0,0,255))
-
+            paint(image_left_ocv, self.message, orgAttention, self.message_template[1],self.message_template[0])
 
 
     def detect(self, main_body):
@@ -44,24 +52,31 @@ class Squat:
                     self.knee_angle = right_knee_angle
 
                     if self.state == "S0":
+                        self.message_state = "STANDING"
                         if len(self.state_queue) == 0:
                             if self.back_angle > 45:
-                                self.message="BEND BACKWARDS"
+                                self.message= "IMPROPER BACK POSTURE"
+                                self.message_template = [colorRed, colorWhite]
                                 self.wrong_movement = True
 
                             else:
                                 if self.wrong_movement:
                                     self.incorrect +=1
                                     self.wrong_movement = False
-                                self.message=""
+                                # self.message= ""
                             if self.knee_angle < 130:
                                 self.state = "S1"
                                 self.last_state = "S0"
+                                self.message_state = "DESCENT"
                         else:
                             if exercises_is_correct(self.state_queue) and self.wrong_movement == False:
                                 self.correct +=1
+                                self.message = "GOOD JOB"
+                                self.message_template = [colorGreen, colorWhite]
+                                play_beep_async()
                             else:
                                 self.incorrect +=1
+                                play_beep_async(error=True)
 
                             self.state_queue = []
                             self.wrong_movement = False
@@ -70,12 +85,16 @@ class Squat:
                     #Starea intermediara
                     elif self.state == "S1":
                         if self.back_angle > 45:
-                            self.message = "BEND BACKWARDS"
+                            self.message = "IMPROPER BACK POSTURE"
                             self.wrong_movement = True
+                            self.message_template = [colorRed, colorWhite]
                         if self.knee_angle < 90:
                             self.state = "S2"
                             self.state_queue.append("S1")
                             self.last_state = "S1"
+                            self.message_state = "BOTTOM"
+                            self.message="GO UP"
+                            self.message_template = [colorYellow,colorBlack]
 
                         elif self.knee_angle > 130:
                             self.state = "S0"
@@ -83,22 +102,26 @@ class Squat:
                             self.last_state = "S1"
 
                         if self.last_state == "S0":
-                            self.message="Go Deeper"
-                        else:
-                            self.message=""
+                            self.message= "GO DOWN"
+                            self.message_template = [colorYellow,colorBlack]
+                        # else:
+                        #     self.message= ""
 
                     #starea finala
                     elif self.state == "S2":
                         if self.back_angle > 45:
-                            self.message = "BEND BACKWARDS"
+                            self.message = "IMPROPER BACK POSTURE"
+                            self.message_template = [colorRed, colorWhite]
                             self.wrong_movement = True
+                            play_beep_async(error=True)
                         if self.last_state != "S2":
                             self.state_queue.append("S2")
                             self.last_state = "S2"
 
                         if self.knee_angle > 90:
+                            self.message_state = "ASCENT"
                             self.state = "S1"
-                            play_beep_async()
+
 
     def verify_movement(self,main_body):
        pass

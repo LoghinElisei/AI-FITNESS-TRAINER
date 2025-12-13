@@ -1,17 +1,32 @@
 import cv2
 
 # --- Globalele tale (Constante) ---
-org1 = (520, 100)
+org1 = (700, 200)
 org2 = (50, 900)
-org3 = (1200, 300)
-org4 = (1200, 400)
-org5 = (20,1000)
-org6 = (520,200)
+org3 = (1320, 200)
+org4 = (1320, 300)
+orgInfo1 = (20,200)
+orgInfo2 = (20,300)
+orgTitle = (850,85)
+orgFeedback = (20,900)
+orgAttention = (20,1000)
+orgState = (20,600)
 font = cv2.FONT_HERSHEY_SIMPLEX
 thickness = 3
 font_scale = 2
 text_format = "LOW CONFIDENCE Squats: 100 "
+colorGreen = (0, 255, 0)
+colorRed = (0,0,255)
+colorWhite = (255,255,255)
+colorYellow = (0,255,255)
+colorTurquoise = (255,255,0)
+colorBlack = (0,0,0)
 
+SQUAT_STATE_MESSAGES = {
+    "S0": "Standing",
+    "S1": "Descending phase",
+    "S2": "Bottom position"
+}
 
 def _draw_text_with_bg(frame, text, org, color, bg_color):
 
@@ -22,7 +37,7 @@ def _draw_text_with_bg(frame, text, org, color, bg_color):
 
     cv2.rectangle(frame,
                   (x - padding, y - text_h - padding),  # Stânga-Sus
-                  (x + text_w + padding, y + baseline + padding),  # Dreapta-Jos
+                  (x + text_w + padding, y + baseline ),  # Dreapta-Jos
                   bg_color,
                   -1)
 

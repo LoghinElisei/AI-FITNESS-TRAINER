@@ -179,8 +179,9 @@ def main(opt):
                     print("Restart")
                     key_wait = 10
 
-            if key == 110: #for 'n' key ->next exercises
-                exercises_type = (exercises_type+1) % 3
+            if key == 49: exercises_type = 0
+            elif key == 50: exercises_type = 1
+            elif key == 51: exercises_type = 2
 
 
 
