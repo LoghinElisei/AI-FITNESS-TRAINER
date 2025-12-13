@@ -19,7 +19,7 @@ class JumpingJacks:
             info_text = f"Arms: {int(self.arm_angle_avg)} | Legs: {int(self.legs_angle)}"
             paint_rep_on_display(image_left_ocv, info_text, "Jumping Jacks", (255, 165, 0))
 
-            paint(image_left_ocv, f"COUNT : {self.correct} ", org3, color=(255, 255, 255), background_color=(0, 255, 0))
+            paint(image_left_ocv, f"COUNT : {self.correct} ", orgCorrect, color=(255, 255, 255), background_color=(0, 255, 0))
 
             status_text = "OPEN" if self.state == "S1" else "CLOSE"
             paint(image_left_ocv, f"State: {status_text}", org6, color=(0, 255, 255), background_color=(0, 0, 0))

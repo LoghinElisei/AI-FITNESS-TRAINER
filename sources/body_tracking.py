@@ -171,18 +171,21 @@ def main(opt):
             if key == 113: # for 'q' key
                 print("Exiting...")
                 break
-            if key == 109: # for 'm' key
+            if key == 112: # for 'p' key
                 if key_wait>0:
                     print("Pause")
                     key_wait = 0 
                 else : 
                     print("Restart")
                     key_wait = 10
-
+            if key == 114:
+                squats.reset()
+                # jumping_jacks.reset()
+                # pushUps.reset()
             if key == 49: exercises_type = 0
             elif key == 50: exercises_type = 1
             elif key == 51: exercises_type = 2
-
+            print(f"key: {key} , key_wait: {key_wait}")
 
 
     image.free(sl.MEM.CPU)

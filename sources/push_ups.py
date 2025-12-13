@@ -17,8 +17,8 @@ class PushUps:
         if verify_confidence(main_body):
             paint_on_display_background(image_left_ocv,org1)
             paint_rep_on_display(image_left_ocv, f"Elbow Angle: {int(self.elbow_angle)}", "Push-ups", (0, 255, 0))
-            paint(image_left_ocv,f"CORRECT : {self.correct} ",org3,color=(255,255,255),background_color=(0,255,0))
-            paint(image_left_ocv, f"INCORRECT : {self.incorrect}", org4,color=(255,255,255),background_color=(0,0,255))
+            paint(image_left_ocv,f"CORRECT : {self.correct} ", orgCorrect, color=(255, 255, 255), background_color=(0, 255, 0))
+            paint(image_left_ocv, f"INCORRECT : {self.incorrect}", orgIncorrect, color=(255, 255, 255), background_color=(0, 0, 255))
             paint(image_left_ocv, f"Back Angle: {int(self.back_angle)}", org6,color=(0,255,0),background_color=(0,0,0))
 
         else:
