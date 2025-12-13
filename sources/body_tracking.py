@@ -185,7 +185,6 @@ def main(opt):
             if key == 49: exercises_type = 0
             elif key == 50: exercises_type = 1
             elif key == 51: exercises_type = 2
-            print(f"key: {key} , key_wait: {key_wait}")
 
 
     image.free(sl.MEM.CPU)
