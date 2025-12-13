@@ -18,8 +18,8 @@ class JumpingJacks:
     def paint(self, image_left_ocv, main_body):
         paint(image_left_ocv, "JUMPING JACKS", orgTitle2, color=(252, 34, 0), bg_color=(14, 201, 255))
         draw_command_menu(image_left_ocv, orgCommands)
-        paint(image_left_ocv, f"CORRECT : {self.correct}  ", orgCorrect, color=(255, 255, 255), bg_color=(0, 255, 0))
-        paint(image_left_ocv, f"INCORRECT : {self.incorrect}", orgIncorrect, color=(255, 255, 255),
+        paint(image_left_ocv, f"CORRECT: {self.correct}  ", orgCorrect, color=(255, 255, 255), bg_color=(0, 255, 0))
+        paint(image_left_ocv, f"INCORRECT: {self.incorrect}", orgIncorrect, color=(255, 255, 255),
               bg_color=(0, 0, 255))
         paint(image_left_ocv, f"Arm Angle: {int(self.arm_angle)}", orgInfo1, color=(0, 255, 0), bg_color=(0, 0, 0))
         paint(image_left_ocv, f"Legs Angle: {int(self.legs_angle)}", orgInfo2, color=(0, 255, 0), bg_color=(0, 0, 0))

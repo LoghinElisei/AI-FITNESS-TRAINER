@@ -2,8 +2,8 @@ import cv2
 
 org1 = (700, 200)
 org2 = (50, 900)
-orgCorrect = (1320, 200)
-orgIncorrect = (1320, 300)
+orgCorrect = (1400, 200)
+orgIncorrect = (1400, 300)
 orgInfo1 = (20,200)
 orgInfo2 = (20,300)
 orgTitle = (850,85)

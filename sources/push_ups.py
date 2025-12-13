@@ -7,28 +7,34 @@ class PushUps:
         self.elbow_angle = 180
         self.back_angle = 180
         self.message = "Start"
+        self.message_state = "STANDING"
+        self.message_template = [colorRed, colorWhite]
         self.state_queue = []
         self.wrong_movement = False
         self.correct = 0
         self.incorrect = 0
         self.last_state = "S0"
 
-    def paint(self,image_left_ocv,main_body):
-        if verify_confidence(main_body):
-            paint_on_display_background(image_left_ocv,org1)
-            paint_rep_on_display(image_left_ocv, f"Elbow Angle: {int(self.elbow_angle)}", "Push-ups", (0, 255, 0))
-            paint(image_left_ocv,f"CORRECT : {self.correct} ", orgCorrect, color=(255, 255, 255), background_color=(0, 255, 0))
-            paint(image_left_ocv, f"INCORRECT : {self.incorrect}", orgIncorrect, color=(255, 255, 255), background_color=(0, 0, 255))
-            paint(image_left_ocv, f"Back Angle: {int(self.back_angle)}", org6,color=(0,255,0),background_color=(0,0,0))
+    def paint(self, image_left_ocv, main_body):
+        paint(image_left_ocv, "Push-ups", orgTitle, color=(252, 34, 0), bg_color=(14, 201, 255))
+        draw_command_menu(image_left_ocv, orgCommands)
+        paint(image_left_ocv, f"CORRECT: {self.correct}  ", orgCorrect, color=(255, 255, 255), bg_color=(0, 255, 0))
+        paint(image_left_ocv, f"INCORRECT: {self.incorrect}", orgIncorrect, color=(255, 255, 255),
+              bg_color=(0, 0, 255))
+        paint(image_left_ocv, f"Elbow Angle: {int(self.elbow_angle)}", orgInfo1, color=(0, 255, 0), bg_color=(0, 0, 0))
+        paint(image_left_ocv, f"Back Angle: {int(self.back_angle)}", orgInfo2, color=(0, 255, 0), bg_color=(0, 0, 0))
+        paint(image_left_ocv, f"STATE: {self.message_state}", orgState, colorBlack, colorTurquoise)
+        if self.message == "BODY NOT FULLY DETECTED":
+            self.message = ""
 
-        else:
-            paint_on_display_background(image_left_ocv,org1)
-            paint_rep_on_display(image_left_ocv, "LOW CONFIDENCE","Push-ups", (0, 0, 255))
-
+        if not verify_confidence(main_body):
+            # paint_on_display_background(image_left_ocv,org1)
+            # paint_rep_on_display(image_left_ocv, "LOW CONFIDENCE","Squats", (0, 0, 255))
+            paint(image_left_ocv, "LOW CONFIDENCE", org1, color=(0, 0, 255), bg_color=(0, 0, 0))
+            self.message = "BODY NOT FULLY DETECTED"
+            self.message_template = [colorRed, colorWhite]
         if self.message != "":
-            paint(image_left_ocv, self.message, org5,color=(255,255,255),background_color=(0,0,255))
-
-
+            paint(image_left_ocv, self.message, orgAttention, self.message_template[1], self.message_template[0])
 
     def detect(self, main_body):
             if verify_confidence(main_body):
