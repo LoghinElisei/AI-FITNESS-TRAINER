@@ -76,7 +76,7 @@ class Squat:
                     if self.state == "S0":
                         self.message_state = "STANDING"
                         if len(self.state_queue) == 0:
-                            if self.back_angle > 45:
+                            if self.back_angle > 42:
                                 self.message= "IMPROPER BACK POSTURE"
                                 self.message_template = [colorRed, colorWhite]
                                 self.wrong_movement = True
@@ -106,7 +106,7 @@ class Squat:
 
                     #Starea intermediara
                     elif self.state == "S1":
-                        if self.back_angle > 45:
+                        if 20 > self.back_angle > 55:
                             self.message = "IMPROPER BACK POSTURE"
                             self.wrong_movement = True
                             self.message_template = [colorRed, colorWhite]
@@ -131,7 +131,7 @@ class Squat:
 
                     #starea finala
                     elif self.state == "S2":
-                        if self.back_angle > 45:
+                        if self.back_angle > 65:
                             self.message = "IMPROPER BACK POSTURE"
                             self.message_template = [colorRed, colorWhite]
                             self.wrong_movement = True
