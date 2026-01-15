@@ -37,6 +37,11 @@ class JumpingJacks:
             paint(image_left_ocv, self.message, orgAttention, self.message_template[1], self.message_template[0])
 
 
+    def reset(self):
+        self.correct = 0
+        self.incorrect = 0
+
+
     def detect(self, main_body):
         if verify_confidence(main_body):
             left_arm, right_arm = compute_arm_angles(main_body)

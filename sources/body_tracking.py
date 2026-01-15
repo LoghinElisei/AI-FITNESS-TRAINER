@@ -73,7 +73,6 @@ def parse_args(init, opt):
 
 
 def main(opt):
-    print("Running Body Tracking sample ... Press 'q' to quit, or 'm' to pause or restart")
     # Create a Camera object
     squats = Squat()
     pushUps = PushUps()
@@ -178,10 +177,15 @@ def main(opt):
                 else : 
                     print("Restart")
                     key_wait = 10
+
             if key == 114:
-                squats.reset()
-                # jumping_jacks.reset()
-                # pushUps.reset()
+                if exercises_type == 0:
+                    squats.reset()
+                elif exercises_type == 1:
+                    jumping_jacks.reset()
+                elif exercises_type == 2:
+                    pushUps.reset()
+
             if key == 49: exercises_type = 0
             elif key == 50: exercises_type = 1
             elif key == 51: exercises_type = 2

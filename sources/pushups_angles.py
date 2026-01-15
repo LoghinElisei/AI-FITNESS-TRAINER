@@ -50,6 +50,7 @@ def body_is_down(main_body) -> bool:
     y_leg = main_body.keypoint[24][1]
 
     print(f"hand = {y_hand}, leg = {y_leg}")
-    if abs(y_hand - y_leg) < 100:
+    if abs(y_hand - y_leg) < 0.4:
         print("body is down")
-    return True
+        return True
+    return False

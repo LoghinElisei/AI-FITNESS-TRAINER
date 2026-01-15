@@ -36,6 +36,11 @@ class PushUps:
         if self.message != "":
             paint(image_left_ocv, self.message, orgAttention, self.message_template[1], self.message_template[0])
 
+
+    def reset(self):
+        self.correct = 0
+        self.incorrect = 0
+
     def detect(self, main_body):
             if verify_confidence(main_body):
 
@@ -43,58 +48,58 @@ class PushUps:
                 self.back_angle = compute_back_angle(main_body)
                 self.elbow_angle = right_elbow_angle
                 if body_is_down(main_body):
-                    if abs(left_elbow_angle - right_elbow_angle) < 50:
+                    # if abs(left_elbow_angle - right_elbow_angle) < 50:
 
-                        if self.state == "S0":
-                            if len(self.state_queue) == 0:
-                                if 100 > self.back_angle > 145:
-                                    self.message = "KEEP YOUR BACK STRAIGHT"
-                                    self.wrong_movement = True
-                                if self.elbow_angle < 150:
-                                    self.state = "S1"
-                                    self.last_state = "S0"
-                            else:
-                                if exercises_is_correct(self.state_queue) and self.wrong_movement == False:
-                                    self.correct +=1
-                                    play_beep_async()
-                                else:
-                                    self.incorrect +=1
-                                    play_beep_async(error=True)
-
-                                self.state_queue = []
-                                self.wrong_movement = False
-
-                        #Starea intermediara
-                        elif self.state == "S1":
+                    if self.state == "S0":
+                        if len(self.state_queue) == 0:
                             if 100 > self.back_angle > 145:
                                 self.message = "KEEP YOUR BACK STRAIGHT"
                                 self.wrong_movement = True
-                            if self.elbow_angle < 90:
-                                self.state = "S2"
-                                self.state_queue.append("S1")
-                                self.last_state = "S1"
-
-                            elif self.elbow_angle > 150:
-                                self.state = "S0"
-                                self.state_queue.append("S1")
-                                self.last_state = "S1"
-
-                            if self.last_state == "S0":
-                                self.message="GO DOWN"
-                            else:
-                                self.message=""
-
-                        #starea finala
-                        elif self.state == "S2":
-                            if 100 > self.back_angle > 145:
-                                self.message = "KEEP YOUR BACK STRAIGHT"
-                                self.wrong_movement = True
-                            if self.last_state != "S2":
-                                self.state_queue.append("S2")
-                                self.last_state = "S2"
-
-                            if self.elbow_angle > 90:
+                            if self.elbow_angle < 150:
                                 self.state = "S1"
+                                self.last_state = "S0"
+                        else:
+                            if exercises_is_correct(self.state_queue) and self.wrong_movement == False:
+                                self.correct +=1
+                                play_beep_async()
+                            else:
+                                self.incorrect +=1
+                                play_beep_async(error=True)
+
+                            self.state_queue = []
+                            self.wrong_movement = False
+
+                    #Starea intermediara
+                    elif self.state == "S1":
+                        if 100 > self.back_angle > 145:
+                            self.message = "KEEP YOUR BACK STRAIGHT"
+                            self.wrong_movement = True
+                        if self.elbow_angle < 90:
+                            self.state = "S2"
+                            self.state_queue.append("S1")
+                            self.last_state = "S1"
+
+                        elif self.elbow_angle > 150:
+                            self.state = "S0"
+                            self.state_queue.append("S1")
+                            self.last_state = "S1"
+
+                        if self.last_state == "S0":
+                            self.message="GO DOWN"
+                        else:
+                            self.message=""
+
+                    #starea finala
+                    elif self.state == "S2":
+                        if 100 > self.back_angle > 145:
+                            self.message = "KEEP YOUR BACK STRAIGHT"
+                            self.wrong_movement = True
+                        if self.last_state != "S2":
+                            self.state_queue.append("S2")
+                            self.last_state = "S2"
+
+                        if self.elbow_angle > 90:
+                            self.state = "S1"
 
                 else:
                     self.message = "GO INTO PUSH-UPS POSITION"
