@@ -22,7 +22,6 @@
    This sample shows how to detect a human bodies and draw their 
    modelised skeleton in an OpenGL window
 """
-import cv2
 import pyzed.sl as sl
 import cv_viewer.tracking_viewer as cv_viewer
 import argparse

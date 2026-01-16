@@ -1,4 +1,3 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/BzgEFjMi)
 # 📘 CVAI - Body Tracking Detection
 
 **Authors:**  
@@ -9,9 +8,33 @@
 
 ## 🧠 General Description
 
-  The Body Tracking Detection project aims to develop a system that monitors and evaluates the quality of physical exercises performed by a person in real time using a Zed2i camera. The system detects the body’s position and analyzes its movements to recognize various physical exercises such as push-ups and squats.
+  The Body Tracking Detection project aims to develop a system that monitors and evaluates the quality of physical exercises performed by a person in real time using a Zed2i camera. The system detects the body’s position and analyzes its movements to recognize various physical exercises such as push-ups, squats and jumping-jacks.
 
 ---
+## 🏫 Gheorghe Asachi Technical University of Iași  
+**Faculty of Automatic Control and Computer Engineering**
+
+---
+## 📐 System Architecture
+<p align="center">
+  <img src="images/ARHITECTURA_FINAL.png">
+</p>
+
+---
+## ⭐ PROJECT POSTER
+<p align="center">
+  <img src="images/CVAI_PREZENTARE.png">
+</p>
+
+## ▶️ Video Presentation
+
+<p align="center">
+  <a href="AI_FITNESS_TRAINER_VIDEO.mp4">
+    <img src="images/THUMBNAIL.png" width="2443" alt="video">
+  </a>
+</p>
+
+
 
 ## 📚 Analyzed Papers
 
@@ -81,13 +104,5 @@
 ---
 
 
-## 🏫 Gheorghe Asachi Technical University of Iași  
-**Faculty of Automatic Control and Computer Engineering**
-
----
-## 📐 System Architecture
-<p align="center">
-  <img src="images/Arhitectura2.jpg">
-</p>
 
 
