@@ -26,10 +26,10 @@
   <img src="images/CVAI_PREZENTARE.png">
 </p>
 
-## ▶️ Video Presentation
+## ▶️ Video Presentation 
 
 <p align="center">
-  <a href="AI_FITNESS_TRAINER_VIDEO.mp4">
+  <a href="https://www.youtube.com/watch?v=GcwaBNYXL20">
     <img src="images/THUMBNAIL.png" width="2443" alt="video">
   </a>
 </p>
